@@ -215,6 +215,59 @@ public class SistemaMagos {
             int cant = obtenerEntero();
             listaHechizos.add(new HechizoPlanta(nombre, danho, stun, cant));
             break;
+        default:
+        	System.out.println("Tipo invalido");
+        	return;
 		}
+		guardarDatos();
+		System.out.println("Hechizo agregado");
+		
+	}
+	private void modificarHechizo() {
+		System.out.print("Nombre del hechizo a modificar: ");
+        String nombre = s.nextLine().trim();
+        Hechizo hechizo = buscarHechizoPorNombre(nombre);
+        if (hechizo == null) {
+            System.out.println("Hechizo no encontrado.");
+            return;
+        }
+        System.out.print("Nuevo daño: ");
+        int nuevoDanho = obtenerEntero();
+        listaMagos.forEach(m -> {
+            if (m.tieneHechizo(nombre)) {
+                m.eliminarHechizo(nombre);
+                Hechizo nuevo = crearHechizoModificado(hechizo, nuevoDanho);
+                m.agregarHechizo(nuevo);
+            }
+        });
+        listaHechizos.remove(hechizo);
+        Hechizo nuevo = crearHechizoModificado(hechizo, nuevoDanho);
+        listaHechizos.add(nuevo);
+        guardarDatos();
+        System.out.println("Hechizo modificado.");
+    }
+
+    private Hechizo crearHechizoModificado(Hechizo original, int nuevoDanho) {
+        String tipo = original.getTipo();
+        String nombre = original.getNombre();
+        switch (tipo) {
+            case "Fuego":
+                HechizoDeFuego f = (HechizoDeFuego) original;
+                return new HechizoDeFuego(nombre, nuevoDanho, f.duracionQuemadura);
+            case "Tierra":
+                HechizoDeTierra t = (HechizoDeTierra) original;
+                return new HechizoDeTierra(nombre, nuevoDanho, t.mejoraDefensa);
+            case "Planta":
+                HechizoDePlanta p = (HechizoDePlanta) original;
+                return new HechizoDePlanta(nombre, nuevoDanho, p.duracionStun, p.cantPlantas);
+            case "Agua":
+                HechizoDeAgua a = (HechizoDeAgua) original;
+                return new HechizoDeAgua(nombre, nuevoDanho, a.cantidadHeal, a.presionAgua);
+            default:
+                return null;
+        }
+	}
+	private void eliminarHechizo() {
+		
 	}
 }
