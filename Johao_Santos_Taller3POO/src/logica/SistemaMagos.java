@@ -145,7 +145,76 @@ public class SistemaMagos {
 			listaMagos.removeIf(m -> m.getNombre().equals(nombre));
 			listaMagos.add(mago);
 			break;
+		case 2:
+			System.out.print("Nombre del hechizo: ");
+			String nombreH = s.nextLine();
+			Hechizo hechizo = buscarHechizoPorNombre(nombreH);
+			if (hechizo == null) {
+				System.out.println("Hechizo no encontrado.");
+				return;
+			}
+			mago.agregarHechizo(hechizo);
+			break;
+		case 3:
+			System.out.print("Nombre del hechizo a eliminar: ");
+			String hAEliminar = s.nextLine().trim();
+			mago.eliminarHechizo(hAEliminar);
+			break;
+		default:
+			System.out.println("opcion invalida");
 			
+		}
+		guardarDatos();
+		System.out.println("Mago modificado.");
+	}
+	private void eliminarMago() {
+		System.out.print("Nombre del mago a eliminar: ");
+		String nombre = s.nextLine().trim();
+		if (listaMagos.removeIf(m -> m.getNombre().equals(nombre))) {
+			guardarDatos();
+			System.out.println("Mago Eliminado");
+		} else {
+			System.out.println("Mago no encontrado.");
+		}
+		
+	}
+	private void agregarHechizo() {
+		System.out.print("Nombre: ");
+		String nombre = s.nextLine().trim();
+		if (buscarHechizoPorNombre(nombre) != null) {
+			System.out.println("Ya existe un hechizo con ese nombre.");
+			return;
+		}
+		System.out.print("Tipo (Fuego/Tierra/Agua/Planta): ");
+		String tipo = s.nextLine().trim();
+		System.out.print("Daño: ");
+		int danho = obtenerEntero();
+		
+		switch (tipo) {
+		case "Fuego":
+			System.out.print("Duracion quemadura: ");
+			int duracion = obtenerEntero();
+			listaHechizos.add(new HechizoDeFuego(nombre, danho, duracion));
+			break;
+		case "Tierra":
+			System.out.print("Mejora Defensa: ");
+            int mejora = obtenerEntero();
+            listaHechizos.add(new HechizoTierra(nombre, danho, mejora));
+            break;
+		case "Agua":
+			System.out.print("Cantidad Heal: ");
+            int heal = obtenerEntero();
+            System.out.print("Presión Agua: ");
+            int presion = obtenerEntero();
+            listaHechizos.add(new HechizoAgua(nombre, danho, heal, presion));
+            break;
+		case "Planta":
+			System.out.print("Duración Stun: ");
+            int stun = obtenerEntero();
+            System.out.print("Cantidad Plantas: ");
+            int cant = obtenerEntero();
+            listaHechizos.add(new HechizoPlanta(nombre, danho, stun, cant));
+            break;
 		}
 	}
 }
