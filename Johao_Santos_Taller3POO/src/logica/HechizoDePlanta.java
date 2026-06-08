@@ -1,7 +1,8 @@
 package logica;
 
 public class HechizoDePlanta extends Hechizo {
-	private int duracionStun, cantPlantas;
+	protected int duracionStun;
+	protected int cantPlantas;
 
 	public HechizoDePlanta(String nombre, int danho, int duracionStun, int cantPlantas) {
 		super(nombre, "Planta", danho);

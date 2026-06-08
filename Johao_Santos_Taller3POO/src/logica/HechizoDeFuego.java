@@ -1,7 +1,7 @@
 package logica;
 
 public class HechizoDeFuego extends Hechizo{
-	private int duracionQuemadura;
+	protected int duracionQuemadura;
 
 	public HechizoDeFuego(String nombre, int danho, int duracionQuemadura) {
 		super(nombre, "Fuego", danho);

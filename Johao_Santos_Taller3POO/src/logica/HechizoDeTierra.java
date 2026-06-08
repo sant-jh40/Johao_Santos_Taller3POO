@@ -1,7 +1,7 @@
 package logica;
 
 public class HechizoDeTierra extends Hechizo {
-	private int mejoraDefensa;
+	protected int mejoraDefensa;
 
 	public HechizoDeTierra(String nombre, int danho, int mejoraDefensa) {
 		super(nombre, "Tierra", danho);

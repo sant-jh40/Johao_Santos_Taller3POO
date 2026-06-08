@@ -83,6 +83,12 @@ public class SistemaMagos {
 	private Hechizo buscarHechizoPorNombre(String nombre) {
 		return listaHechizos.stream().filter(h -> h.getNombre().equals(nombre)).findFirst().orElse(null);
 	}
+	
+	public void guardarDatos() {
+        guardarMagos();
+        guardarHechizos();
+    }
+	
 	public void guardarMagos() {
 		try (BufferedWriter escritor = new BufferedWriter(new FileWriter("Magos.txt"))){
 			for (Mago m : listaMagos) {
@@ -93,6 +99,16 @@ public class SistemaMagos {
 			System.err.println("Error al guardar Magos.txt: " + e.getMessage());
 		}
 	}
+	private void guardarHechizos() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/Hechizos.txt"))) {
+            for (Hechizo h : listaHechizos) {
+                writer.write(h.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error al guardar Hechizos.txt: " + e.getMessage());
+        }
+    }
 	public void menuAdministrador() {
 		while (true) {
 			System.out.println("\n=== MENU ADMINISTRADOR ===\n1. Agregar Mago\n2. Modificar Mago\n3.Eliminar Mago\n4. Agregar Hechizo\n5. Modificar Hechizo\n6. Eliminar Hechizo");
@@ -137,7 +153,7 @@ public class SistemaMagos {
 		case 1:
 			System.out.print("Nuevo nombre: ");
 			String nuevoNombre = s.nextLine();
-			if (buscarMagoPorNombre() != null) {
+			if (buscarMagoPorNombre(nuevoNombre) != null) {
 				System.out.println("Ya existe un mago con ese nombre.");
 				return;
 			}
@@ -199,21 +215,21 @@ public class SistemaMagos {
 		case "Tierra":
 			System.out.print("Mejora Defensa: ");
             int mejora = obtenerEntero();
-            listaHechizos.add(new HechizoTierra(nombre, danho, mejora));
+            listaHechizos.add(new HechizoDeTierra(nombre, danho, mejora));
             break;
 		case "Agua":
 			System.out.print("Cantidad Heal: ");
             int heal = obtenerEntero();
             System.out.print("Presión Agua: ");
             int presion = obtenerEntero();
-            listaHechizos.add(new HechizoAgua(nombre, danho, heal, presion));
+            listaHechizos.add(new HechizoDeAgua(nombre, danho, heal, presion));
             break;
 		case "Planta":
 			System.out.print("Duración Stun: ");
             int stun = obtenerEntero();
             System.out.print("Cantidad Plantas: ");
             int cant = obtenerEntero();
-            listaHechizos.add(new HechizoPlanta(nombre, danho, stun, cant));
+            listaHechizos.add(new HechizoDePlanta(nombre, danho, stun, cant));
             break;
         default:
         	System.out.println("Tipo invalido");
@@ -268,6 +284,74 @@ public class SistemaMagos {
         }
 	}
 	private void eliminarHechizo() {
-		
+		System.out.print("Nombre del hechizo a eliminar: ");
+		String nombre = s.nextLine().trim();
+		if (listaHechizos.removeIf(h -> h.getNombre().equals(nombre))) {
+			listaMagos.forEach(m -> m.eliminarHechizo(nombre));
+			guardarDatos();
+			System.out.println("Hechizo eliminado.");
+		} else {
+			System.out.println("Hechizo no encontrado");
+		}
 	}
+	
+	public void menuAnalisis() {
+		while (true) {
+			System.out.println("\n=== MENU DE ANALISIS ===\n1. Top 10 Mejores Hechizos\n2. Top 3 Mejores Magos\n3. Mostrar todos los Hechizos\n4. Mostrar todos los Magos\n5. Mostrar Hechizos con Puntuación\n6. Mostrar Magos con Puntuación\n7. Volver");
+			System.out.print("> ");
+			int op = obtenerEntero();
+			
+			switch (op) {
+            case 1 -> top10Hechizos();
+            case 2 -> top3Magos();
+            case 3 -> mostrarHechizos();
+            case 4 -> mostrarMagos();
+            case 5 -> mostrarHechizosConPuntaje();
+            case 6 -> mostrarMagosConPuntaje();
+            case 7 -> { return; }
+            default -> System.out.println("Opción inválida.");
+			}
+		}
+	}
+	private void top10Hechizos() {
+        listaHechizos.stream()
+                .sorted((a, b) -> Double.compare(b.getPuntuacion(), a.getPuntuacion()))
+                .limit(10)
+                .forEach(h -> System.out.printf("%s -> %.2f\n", h.getNombre(), h.getPuntuacion()));
+    }
+	private void top3Magos() {
+        listaMagos.stream()
+                .sorted((a, b) -> Double.compare(b.calcularPuntajeTotal(), a.calcularPuntajeTotal()))
+                .limit(3)
+                .forEach(m -> System.out.printf("%s -> %.2f\n", m.getNombre(), m.calcularPuntajeTotal()));
+    }
+	private void mostrarHechizos() {
+        listaHechizos.forEach(h -> System.out.println(h.getNombre()));
+    }
+	private void mostrarMagos() {
+        listaMagos.forEach(m -> System.out.println(m.getNombre()));
+    }
+	private void mostrarHechizosConPuntaje() {
+        listaHechizos.forEach(h -> System.out.printf("%s (%s): %.2f\n", h.getNombre(), h.getTipo(), h.getPuntuacion()));
+    }
+	private void mostrarMagosConPuntaje() {
+        listaMagos.forEach(m -> System.out.printf("%s: %.2f\n", m.getNombre(), m.calcularPuntajeTotal()));
+    }
+	
+	private Mago buscarMagoPorNombre(String nombre) {
+        return listaMagos.stream()
+                .filter(m -> m.getNombre().equals(nombre))
+                .findFirst()
+                .orElse(null);
+    }
+	private int obtenerEntero() {
+        while (!s.hasNextInt()) {
+            System.out.println("Ingrese un número válido.");
+            s.next();
+        }
+        int valor = s.nextInt();
+        s.nextLine();
+        return valor;
+    }
+	
 }
