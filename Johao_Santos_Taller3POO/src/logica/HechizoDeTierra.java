@@ -3,7 +3,7 @@ package logica;
 public class HechizoDeTierra extends Hechizo {
 	private int mejoraDefensa;
 
-	public HechizoDeTierra(String nombre, String tipo, int danho, int mejoraDefensa) {
+	public HechizoDeTierra(String nombre, int danho, int mejoraDefensa) {
 		super(nombre, "Tierra", danho);
 		this.mejoraDefensa = mejoraDefensa;
 		this.puntuacion = CalcularPuntaje();

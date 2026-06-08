@@ -3,7 +3,7 @@ package logica;
 public class HechizoDeFuego extends Hechizo{
 	private int duracionQuemadura;
 
-	public HechizoDeFuego(String nombre, String tipo, int danho, int duracionQuemadura) {
+	public HechizoDeFuego(String nombre, int danho, int duracionQuemadura) {
 		super(nombre, "Fuego", danho);
 		this.duracionQuemadura = duracionQuemadura;
 		this.puntuacion = CalcularPuntaje();

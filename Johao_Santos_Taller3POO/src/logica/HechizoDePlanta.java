@@ -3,8 +3,8 @@ package logica;
 public class HechizoDePlanta extends Hechizo {
 	private int duracionStun, cantPlantas;
 
-	public HechizoDePlanta(String nombre, String tipo, int danho, int duracionStun, int cantPlantas) {
-		super(nombre, tipo, danho);
+	public HechizoDePlanta(String nombre, int danho, int duracionStun, int cantPlantas) {
+		super(nombre, "Planta", danho);
 		this.duracionStun = duracionStun;
 		this.cantPlantas = cantPlantas;
 		this.puntuacion = CalcularPuntaje();
